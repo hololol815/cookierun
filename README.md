@@ -1,16 +1,44 @@
-# React + Vite
+# Cookie Run 🍪
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+장애물을 피해 끝없이 달리는 횡스크롤 러너 게임입니다. React + Vite + Canvas로 만들었습니다.
 
-Currently, two official plugins are available:
+## 플레이 방법
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+| 조작 | 키 |
+| --- | --- |
+| 점프 (空中에서 한 번 더 가능) | `Space` / `↑` / `W` / 클릭 |
+| 슬라이드 | `↓` / `S` |
+| 일시정지 | `P` / `Esc` |
 
-## React Compiler
+- 화면 **위쪽 체력바**는 시간이 흐를수록 천천히 닳히고, 거리를 달리면 더 빠르게 닳습니다.
+- 장애물(스파이크, 블록, 매달린 밀대, 구덩이)에 부딪히면 체력이 **22** 감소합니다.
+- **체력이 0이 되면 게임이 종료**되고 점수·거리·최고 기록이 표시됩니다.
+- 장애물을 아슬아슬하게 지나가면 근접 회피 보너스와 점수 배율이 올라갑니다.
+- 쿠키를 먹으면 점수 +60, 체력 +4 회복됩니다.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 실행
 
-## Expanding the Oxlint configuration
+```bash
+npm install
+npm run dev      # 개발 서버
+npm run build    # 프로덕션 빌드
+npm run lint     # 린트
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## 구조
+
+```
+src/
+  game/
+    config.js       # 체력·점수·물리 등 튜닝값
+    gameEngine.js   # 순수 Canvas 게임 엔진 (DOM 비의존)
+  components/
+    RunnerGame.jsx  # React 래퍼 (입력 · HUD · 오버레이)
+    RunnerGame.css
+  App.jsx / App.css
+```
+
+게임 규칙은 `gameEngine.js`에서 DOM 없이 독립적으로 동작하므로, 브라우저 없이도
+`new Game()` 후 `update(dt)` / `render(ctx)`만 호출해 테스트할 수 있습니다.
+
+점수는 `localStorage`의 `cookierun.best` 키에 최고 기록으로 저장됩니다.
