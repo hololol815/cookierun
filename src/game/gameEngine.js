@@ -97,7 +97,8 @@ export class Game {
     this.waveTimer = 1.2
     this.pickupTimer = 1.6
     this.hudTimer = 0
-    this.ignorePitsUntil = -Infinity
+    // 구덩이에서 복구한 뒤 잠깐(초 단위) 판정을 유예한다
+    this.pitGraceUntil = -Infinity
   }
 
   start() {
@@ -237,7 +238,15 @@ export class Game {
 
     // 구덩이에 빠진 경우: 체력을 잃고 다시 지면으로 복구
     if (p.y > VIEW.height + 30) {
-      this.ignorePitsUntil = p.x + PLAYER.w / 2 + 260
+      const cx = p.x + PLAYER.w / 2
+      // 방금 빠진 구덩이만 무해하게 표시해 같은 구덩이에 다시 떨어지지 않게 한다
+      for (const o of this.obstacles) {
+        if (o.type === 'pit' && !o.harmless && cx > o.x - 24 && cx < o.x + o.w + 24) {
+          o.harmless = true
+        }
+      }
+      // 플레이어 x는 고정이라 x 기반 유예는 영원히 안 풀린다 → 시간 기반 사용
+      this.pitGraceUntil = this.time + 1
       this.damage(HEALTH.pitDamage, p.x + PLAYER.w / 2, GROUND_Y - 20)
       p.y = GROUND_Y
       p.vy = 0
@@ -392,9 +401,9 @@ export class Game {
   }
 
   isOverPit() {
+    if (this.time < this.pitGraceUntil) return false
     const p = this.player
     const cx = p.x + PLAYER.w / 2
-    if (cx < this.ignorePitsUntil) return false
     for (const o of this.obstacles) {
       if (o.type !== 'pit' || o.harmless) continue
       if (cx > o.x && cx < o.x + o.w) return true
