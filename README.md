@@ -2,6 +2,10 @@
 
 장애물을 피해 끝없이 달리는 횡스크롤 러너 게임입니다. React + Vite + Canvas로 만들었습니다.
 
+## 데모
+
+**https://hololol815.github.io/cookierun/** (GitHub Pages)
+
 ## 플레이 방법
 
 | 조작 | 키 |
@@ -23,7 +27,12 @@ npm install
 npm run dev      # 개발 서버
 npm run build    # 프로덕션 빌드
 npm run lint     # 린트
+npm run deploy   # 빌드 후 gh-pages 브랜치로 배포 (약 1~2분 후 반영)
 ```
+
+배포는 `gh-pages` 브랜치에 정적 파일을 올리는 방식이며, GitHub Pages 설정은
+`gh-pages` 브랜치 루트(`/`)로 지정되어 있습니다. `vite.config.js`의 `base: './'` 설정으로
+서브 경로 배포에서도 자산 경로가 정상 동작합니다.
 
 ## 구조
 
